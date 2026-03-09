@@ -234,15 +234,25 @@ export const jobApply = async (req, res) => {
     const recruiterUser = await User.findById(job.created_by);
 
     // 1. Applicant confirmation email
-    await sendEmail({
-      to: applicantUser.email,
-      subject: "Application Submitted Successfully",
-      html: `
-        <h3>Hello ${applicantUser.fullname}</h3>
-        <p>You have successfully applied for <b>${job.title}</b>.</p>
-        <p>We will notify you once the recruiter updates your status.</p>
-      `,
-    });
+    // await sendEmail({
+    //   to: applicantUser.email,
+    //   subject: "Application Submitted Successfully",
+    //   html: `
+    //     <h3>Hello ${applicantUser.fullname}</h3>
+    //     <p>You have successfully applied for <b>${job.title}</b>.</p>
+    //     <p>We will notify you once the recruiter updates your status.</p>
+    //   `,
+    // });
+    if (applicantUser?.email) {
+  await sendEmail({
+    to: applicantUser.email,
+    subject: "Application Submitted Successfully",
+    html: `
+      <h3>Hello ${applicantUser.fullname}</h3>
+      <p>You applied for <b>${job.title}</b>.</p>
+    `,
+  });
+}
 
     // 2. Employer notification email
     if (recruiterUser?.email) {
@@ -362,14 +372,24 @@ export const applicationStatus = async (req, res) => {
     const job = await Job.findById(application.job);
 
     // 4. Status update email to applicant
-    await sendEmail({
-      to: applicantUser.email,
-      subject: "Application Status Updated",
-      html: `
-        <h3>Hello ${applicantUser.fullname}</h3>
-        <p>Your application for <b>${job.title}</b> is now <b>${status}</b>.</p>
-      `,
-    });
+    // await sendEmail({
+    //   to: applicantUser.email,
+    //   subject: "Application Status Updated",
+    //   html: `
+    //     <h3>Hello ${applicantUser.fullname}</h3>
+    //     <p>Your application for <b>${job.title}</b> is now <b>${status}</b>.</p>
+    //   `,
+    // });
+    if (applicantUser?.email) {
+  await sendEmail({
+    to: applicantUser.email,
+    subject: "Application Submitted Successfully",
+    html: `
+      <h3>Hello ${applicantUser.fullname}</h3>
+      <p>You applied for <b>${job.title}</b>.</p>
+    `,
+  });
+}
 
     //  Admin alert
     await sendEmail({
