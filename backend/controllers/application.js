@@ -185,7 +185,7 @@ import { User } from "../models/user.js";
 import { sendEmail } from "../utils/emailService.js";
 
 
-// ================= APPLY JOB =================
+//APPLY JOB 
 export const jobApply = async (req, res) => {
   try {
     const userId = req.id;
