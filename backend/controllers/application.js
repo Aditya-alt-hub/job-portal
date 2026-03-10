@@ -229,7 +229,7 @@ export const jobApply = async (req, res) => {
     job.applications.push(applyJob._id);
     await job.save();
 
-    // 🔥 Get applicant & recruiter
+    //  Get applicant & recruiter
     const applicantUser = await User.findById(userId);
     const recruiterUser = await User.findById(job.created_by);
 
@@ -288,7 +288,7 @@ export const jobApply = async (req, res) => {
 
 
 
-// ================= GET APPLIED JOBS =================
+//  GET APPLIED JOBS 
 export const getJobAppllied = async (req, res) => {
   try {
     const userId = req.id;
@@ -312,7 +312,7 @@ export const getJobAppllied = async (req, res) => {
 
 
 
-// ================= ADMIN GET APPLICANTS =================
+// ADMIN GET APPLICANTS 
 export const admingetApplicants = async (req, res) => {
   try {
     const jobId = req.params.id;
@@ -342,7 +342,7 @@ export const admingetApplicants = async (req, res) => {
 
 
 
-// ================= UPDATE APPLICATION STATUS =================
+//UPDATE APPLICATION STATUS 
 export const applicationStatus = async (req, res) => {
   try {
     const { status } = req.body;
@@ -367,7 +367,7 @@ export const applicationStatus = async (req, res) => {
     application.status = status;
     await application.save();
 
-    // 🔥 Get applicant & job
+    // Get applicant & job
     const applicantUser = await User.findById(application.applicant);
     const job = await Job.findById(application.job);
 
