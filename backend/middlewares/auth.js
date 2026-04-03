@@ -25,6 +25,7 @@ const auth=async (req,res,next)=>
             );
         }
         req.id=decode.userId;
+        req.role = decode.role;
         next();
 
     }
@@ -33,4 +34,22 @@ const auth=async (req,res,next)=>
         console.log(error);
     }
 }
+// export const authorizeRoles = (...roles)=> (req,res,next)=>{
+//   if(!roles.includes(req.role)){
+//     return res.status(403).json({message:"Access denied"});
+//   }
+//   next();
+// };
+export const authorizeRoles = (...roles) => (req, res, next) => {
+  console.log("Allowed Roles:", roles);
+  console.log("User Role:", req.role);
+
+  if (!req.role || !roles.includes(req.role.toLowerCase().trim())) {
+    return res.status(403).json({
+      message: "Access denied"
+    });
+  }
+
+  next();
+};
 export default auth;

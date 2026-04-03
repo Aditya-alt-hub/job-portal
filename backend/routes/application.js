@@ -1,12 +1,13 @@
 import express from"express";
 import auth from "../middlewares/auth.js";
+import { authorizeRoles } from "../middlewares/auth.js";
 import { admingetApplicants, applicationStatus, getJobAppllied, jobApply } from "../controllers/application.js";
 
 const router=express.Router();
 
 router.route("/jobApply/:id").get(auth,jobApply);
 router.route("/jobApplied").get(auth,getJobAppllied);
-router.route("/:id/applicants").get(auth,admingetApplicants);
-router.route("/status/:id/update").post(auth,applicationStatus);
+router.route("/:id/applicants").get(auth,authorizeRoles("recruiter"),admingetApplicants);
+router.route("/status/:id/update").post(auth,authorizeRoles("recruiter"),applicationStatus);
 
 export default router;

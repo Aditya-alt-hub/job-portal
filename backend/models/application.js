@@ -15,8 +15,9 @@ const applecationSchema=new mongoose.Schema(
     status:
     {
         type:String,
-        enum:["Applied","shortlisted","Rejected"],
-        default:"Applied",
+        // enum:["Applied","shortlisted","Rejected"],
+        enum:['pending', 'Shortlisted', 'Rejected'],
+        default:"pending",
     },
    },
    {

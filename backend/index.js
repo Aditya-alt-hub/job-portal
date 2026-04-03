@@ -22,7 +22,7 @@ app.use(cookieParser());
 const corsOptions=
 {
     origin:['http://localhost:5173',
-      "https://talent-trellis-fe.lovable.app"
+      
     ],
     credentials:true,
 }

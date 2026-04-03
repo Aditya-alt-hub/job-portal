@@ -313,19 +313,49 @@ export const getJobAppllied = async (req, res) => {
 
 
 // ADMIN GET APPLICANTS 
+// export const admingetApplicants = async (req, res) => {
+//   try {
+//     const jobId = req.params.id;
+
+//     const job = await Job.findById(jobId).populate({
+//       path: "applications",
+//       options: { sort: { createdAt: -1 } },
+//       populate: { path: "applicant" },
+//     });
+
+//     if (!job) {
+//       return res.status(404).json({
+//         message: "Not found",
+//         success: false,
+//       });
+//     }
+
+//     return res.status(200).json({
+//       job,
+//       success: true,
+//     });
+
+//   } catch (error) {
+//     console.log(error);
+//   }
+// };
 export const admingetApplicants = async (req, res) => {
   try {
     const jobId = req.params.id;
 
-    const job = await Job.findById(jobId).populate({
+    //  Ownership check
+    const job = await Job.findOne({
+      _id: jobId,
+      created_by: req.id   //  IMPORTANT
+    }).populate({
       path: "applications",
       options: { sort: { createdAt: -1 } },
       populate: { path: "applicant" },
     });
 
     if (!job) {
-      return res.status(404).json({
-        message: "Not found",
+      return res.status(403).json({
+        message: "Not authorized to view applicants",
         success: false,
       });
     }
@@ -343,6 +373,73 @@ export const admingetApplicants = async (req, res) => {
 
 
 //UPDATE APPLICATION STATUS 
+// export const applicationStatus = async (req, res) => {
+//   try {
+//     const { status } = req.body;
+//     const applicationId = req.params.id;
+
+//     if (!status) {
+//       return res.status(400).json({
+//         message: "Status is required",
+//         success: false,
+//       });
+//     }
+
+//     const application = await Application.findById(applicationId);
+//     if (!application) {
+//       return res.status(404).json({
+//         message: "Not found",
+//         success: false,
+//       });
+//     }
+
+//     // Update status (DO NOT use toLowerCase)
+//     application.status = status;
+//     await application.save();
+
+//     // Get applicant & job
+//     const applicantUser = await User.findById(application.applicant);
+//     const job = await Job.findById(application.job);
+
+//     // 4. Status update email to applicant
+//     // await sendEmail({
+//     //   to: applicantUser.email,
+//     //   subject: "Application Status Updated",
+//     //   html: `
+//     //     <h3>Hello ${applicantUser.fullname}</h3>
+//     //     <p>Your application for <b>${job.title}</b> is now <b>${status}</b>.</p>
+//     //   `,
+//     // });
+//     if (applicantUser?.email) {
+//   await sendEmail({
+//     to: applicantUser.email,
+//     subject: "Application Submitted Successfully",
+//     html: `
+//       <h3>Hello ${applicantUser.fullname}</h3>
+//       <p>You applied for <b>${job.title}</b>.</p>
+//     `,
+//   });
+// }
+
+//     //  Admin alert
+//     await sendEmail({
+//       to: process.env.ADMIN_EMAIL,
+//       subject: "Application Status Changed",
+//       html: `
+//         <p>${applicantUser.fullname}'s application for 
+//         <b>${job.title}</b> is now ${status}.</p>
+//       `,
+//     });
+
+//     return res.status(200).json({
+//       message: "Updated Successfully",
+//       success: true,
+//     });
+
+//   } catch (error) {
+//     console.log(error);
+//   }
+// };
 export const applicationStatus = async (req, res) => {
   try {
     const { status } = req.body;
@@ -356,6 +453,7 @@ export const applicationStatus = async (req, res) => {
     }
 
     const application = await Application.findById(applicationId);
+
     if (!application) {
       return res.status(404).json({
         message: "Not found",
@@ -363,35 +461,26 @@ export const applicationStatus = async (req, res) => {
       });
     }
 
-    // Update status (DO NOT use toLowerCase)
+    // Ownership check
+    const job = await Job.findOne({
+      _id: application.job,
+      created_by: req.id   //  IMPORTANT
+    });
+
+    if (!job) {
+      return res.status(403).json({
+        message: "You are not allowed to update this application",
+        success: false,
+      });
+    }
+
+    //  update
     application.status = status;
     await application.save();
 
-    // Get applicant & job
     const applicantUser = await User.findById(application.applicant);
-    const job = await Job.findById(application.job);
 
-    // 4. Status update email to applicant
-    // await sendEmail({
-    //   to: applicantUser.email,
-    //   subject: "Application Status Updated",
-    //   html: `
-    //     <h3>Hello ${applicantUser.fullname}</h3>
-    //     <p>Your application for <b>${job.title}</b> is now <b>${status}</b>.</p>
-    //   `,
-    // });
-    if (applicantUser?.email) {
-  await sendEmail({
-    to: applicantUser.email,
-    subject: "Application Submitted Successfully",
-    html: `
-      <h3>Hello ${applicantUser.fullname}</h3>
-      <p>You applied for <b>${job.title}</b>.</p>
-    `,
-  });
-}
-
-    //  Admin alert
+      // Admin alert
     await sendEmail({
       to: process.env.ADMIN_EMAIL,
       subject: "Application Status Changed",
@@ -400,6 +489,18 @@ export const applicationStatus = async (req, res) => {
         <b>${job.title}</b> is now ${status}.</p>
       `,
     });
+
+    //  Correct email
+    if (applicantUser?.email) {
+      await sendEmail({
+        to: applicantUser.email,
+        subject: "Application Status Updated",
+        html: `
+          <h3>Hello ${applicantUser.fullname}</h3>
+          <p>Your application for <b>${job.title}</b> is now <b>${status}</b>.</p>
+        `,
+      });
+    }
 
     return res.status(200).json({
       message: "Updated Successfully",
