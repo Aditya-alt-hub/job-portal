@@ -42,10 +42,8 @@
 //   }
 // };
 
-import nodemailer from "nodemailer";
-import dotenv from "dotenv";
+// import nodemailer from "nodemailer";
 
-dotenv.config();
 
 // const transporter = nodemailer.createTransport({
 //   // service: "gmail",
@@ -61,46 +59,69 @@ dotenv.config();
 //   socketTimeout: 10000,
 // });
 
-const transporter = nodemailer.createTransport({
-  host: "smtp.gmail.com",
-  port: 587,
-  secure: false,
-  requireTLS: true,
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
-  },
-  connectionTimeout: 10000,
-  greetingTimeout: 10000,
-  socketTimeout: 10000,
-});
+// const transporter = nodemailer.createTransport({
+//   host: "smtp.gmail.com",
+//   port: 587,
+//   secure: false,
+//   requireTLS: true,
+//   auth: {
+//     user: process.env.EMAIL_USER,
+//     pass: process.env.EMAIL_PASS,
+//   },
+//   connectionTimeout: 10000,
+//   greetingTimeout: 10000,
+//   socketTimeout: 10000,
+// });
 
-transporter.verify((err) => {
-  if (err) {
-    console.log("SMTP VERIFY ERROR");
-    console.log(err);
-  } else {
-    console.log("SMTP READY");
-  }
-});
+// transporter.verify((err) => {
+//   if (err) {
+//     console.log("SMTP VERIFY ERROR");
+//     console.log(err);
+//   } else {
+//     console.log("SMTP READY");
+//   }
+// });
+
+// export const sendEmail = async ({ to, subject, html }) => {
+//   try {
+//     console.log("Sending email to:", to);
+
+//     const info = await transporter.sendMail({
+//       from: `"Job Portal" <${process.env.EMAIL_USER}>`,
+//       to,
+//       subject,
+//       html,
+//     });
+
+//     console.log("EMAIL SENT");
+//     console.log(info);
+
+//   } catch (err) {
+//     console.log("EMAIL FAILED");
+//     console.log(err);
+//   }
+// };
+
+import { Resend } from "resend";
+
+import dotenv from "dotenv";
+
+dotenv.config();
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 export const sendEmail = async ({ to, subject, html }) => {
   try {
-    console.log("Sending email to:", to);
-
-    const info = await transporter.sendMail({
-      from: `"Job Portal" <${process.env.EMAIL_USER}>`,
+    const data = await resend.emails.send({
+      from: "Job Portal <onboarding@resend.dev>",
       to,
       subject,
       html,
     });
 
-    console.log("EMAIL SENT");
-    console.log(info);
-
-  } catch (err) {
-    console.log("EMAIL FAILED");
-    console.log(err);
+    console.log("EMAIL SENT:", data);
+  } catch (error) {
+    console.log("EMAIL FAILED:", error);
   }
 };
 
