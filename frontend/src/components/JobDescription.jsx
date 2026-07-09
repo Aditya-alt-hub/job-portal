@@ -105,7 +105,7 @@ const JobDescription = () => {
     const [isApplied, setIsApplied] = useState(false);
     const [loading, setLoading] = useState(false);
 
-    // ✅ Apply Job Handler (Fixed + Optimized)
+    //  Apply Job Handler (Fixed + Optimized)
     const applyJobHandler = async () => {
         if (loading || isApplied) return;
 
@@ -141,7 +141,7 @@ const JobDescription = () => {
         }
     };
 
-    // ✅ Fetch Job Details
+    //  Fetch Job Details
     useEffect(() => {
         const fetchSingleJob = async () => {
             try {
