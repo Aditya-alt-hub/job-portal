@@ -14,6 +14,14 @@ const transporter = nodemailer.createTransport({
   },
 });
 
+transporter.verify((err, success) => {
+  if (err) {
+    console.log("SMTP ERROR:", err);
+  } else {
+    console.log("SMTP READY");
+  }
+});
+
 export const sendEmail = async ({ to, subject, html }) => {
   try {
     console.log("Sending email to:", to);
@@ -27,7 +35,10 @@ export const sendEmail = async ({ to, subject, html }) => {
 
     console.log(" Email sent:", info.response);
   } catch (error) {
-    console.log(" Email error:", error);
+    console.log("Email error message:", error.message);
+console.log("Email error code:", error.code);
+console.log("Email response:", error.response);
+console.log("Full error:", error);
   }
 };
 
