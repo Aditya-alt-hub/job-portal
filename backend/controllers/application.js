@@ -244,7 +244,7 @@ export const jobApply = async (req, res) => {
     //   `,
     // });
     if (applicantUser?.email) {
-  await sendEmail({
+   sendEmail({
     to: applicantUser.email,
     subject: "Application Submitted Successfully",
     html: `
@@ -256,7 +256,7 @@ export const jobApply = async (req, res) => {
 
     // 2. Employer notification email
     if (recruiterUser?.email) {
-      await sendEmail({
+       sendEmail({
         to: recruiterUser.email,
         subject: "New Applicant for Your Job",
         html: `
@@ -267,7 +267,7 @@ export const jobApply = async (req, res) => {
     }
 
     // 3. Admin alert
-    await sendEmail({
+     sendEmail({
       to: process.env.ADMIN_EMAIL,
       subject: "New Job Application Alert",
       html: `
@@ -481,7 +481,7 @@ export const applicationStatus = async (req, res) => {
     const applicantUser = await User.findById(application.applicant);
 
       // Admin alert
-    await sendEmail({
+     sendEmail({
       to: process.env.ADMIN_EMAIL,
       subject: "Application Status Changed",
       html: `
@@ -492,7 +492,7 @@ export const applicationStatus = async (req, res) => {
 
     //  Correct email
     if (applicantUser?.email) {
-      await sendEmail({
+       sendEmail({
         to: applicantUser.email,
         subject: "Application Status Updated",
         html: `

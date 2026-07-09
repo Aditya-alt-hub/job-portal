@@ -1,7 +1,48 @@
 
 
-import nodemailer from "nodemailer";
+// import nodemailer from "nodemailer";
 
+// import dotenv from "dotenv";
+
+// dotenv.config();
+
+// const transporter = nodemailer.createTransport({
+//   service: "gmail",
+//   auth: {
+//     user: process.env.EMAIL_USER,
+//     pass: process.env.EMAIL_PASS,
+//   },
+// });
+
+// transporter.verify((err, success) => {
+//   if (err) {
+//     console.log("SMTP ERROR:", err);
+//   } else {
+//     console.log("SMTP READY");
+//   }
+// });
+
+// export const sendEmail = async ({ to, subject, html }) => {
+//   try {
+//     console.log("Sending email to:", to);
+
+//     const info = await transporter.sendMail({
+//       from: `"Job Portal" <${process.env.EMAIL_USER}>`,
+//       to,
+//       subject,
+//       html,
+//     });
+
+//     console.log(" Email sent:", info.response);
+//   } catch (error) {
+//     console.log("Email error message:", error.message);
+// console.log("Email error code:", error.code);
+// console.log("Email response:", error.response);
+// console.log("Full error:", error);
+//   }
+// };
+
+import nodemailer from "nodemailer";
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -14,9 +55,10 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-transporter.verify((err, success) => {
+transporter.verify((err) => {
   if (err) {
-    console.log("SMTP ERROR:", err);
+    console.log("SMTP VERIFY ERROR");
+    console.log(err);
   } else {
     console.log("SMTP READY");
   }
@@ -33,12 +75,12 @@ export const sendEmail = async ({ to, subject, html }) => {
       html,
     });
 
-    console.log(" Email sent:", info.response);
-  } catch (error) {
-    console.log("Email error message:", error.message);
-console.log("Email error code:", error.code);
-console.log("Email response:", error.response);
-console.log("Full error:", error);
+    console.log("EMAIL SENT");
+    console.log(info);
+
+  } catch (err) {
+    console.log("EMAIL FAILED");
+    console.log(err);
   }
 };
 
