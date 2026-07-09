@@ -22,6 +22,7 @@ app.use(cookieParser());
 const corsOptions=
 {
     origin:['http://localhost:5173',
+      'https://job-portal-nine-rosy-34.vercel.app'
       
     ],
     credentials:true,
